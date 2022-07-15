@@ -84,18 +84,17 @@ const Icon = styled.div`
 `;
 
 function App() {
-  const [isDark, setIsDark] = useState(false);
+  const [themeMode, setThemeMode] = useState(false);
   const toggleDark = () => {
-    setIsDark(!isDark);
+    setThemeMode(!themeMode);
   };
 
   return (
-    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+    <ThemeProvider theme={themeMode ? darkTheme : lightTheme}>
       <Icon onClick={() => toggleDark()}>
-        {isDark ? <span>🌚</span> : <span>🌞</span>}
+        {themeMode ? <span>🌚</span> : <span>🌞</span>}
       </Icon>
       <GlobalStyle />
-      <div>hi</div>
       <HelmetProvider>
         <Router />
       </HelmetProvider>
