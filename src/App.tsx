@@ -1,7 +1,9 @@
-import { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
 import Router from "./Router";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { HelmetProvider } from "react-helmet-async";
+import { useState } from "react";
+import { lightTheme, darkTheme } from "./theme";
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
@@ -67,15 +69,38 @@ a {
 }
 `;
 
+const Icon = styled.div`
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  width: 20vw;
+  height: 10vh;
+  font-size: 50px;
+  &:hover {
+    transition: all 0.6s ease-in-out;
+    transform: scale(1.2);
+  }
+`;
+
 function App() {
+  const [isDark, setIsDark] = useState(false);
+  const toggleDark = () => {
+    setIsDark(!isDark);
+  };
+
   return (
-    <div>
+    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+      <Icon onClick={() => toggleDark()}>
+        {isDark ? <span>🌚</span> : <span>🌞</span>}
+      </Icon>
       <GlobalStyle />
+      <div>hi</div>
       <HelmetProvider>
         <Router />
       </HelmetProvider>
       <ReactQueryDevtools initialIsOpen={true} />
-    </div>
+    </ThemeProvider>
   );
 }
 

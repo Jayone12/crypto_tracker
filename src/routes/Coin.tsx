@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useQuery } from "react-query";
 import { Route, Routes, useLocation, useMatch, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { fetchCoinInfo, fetchCoins, fetchCoinTickers } from "../api";
+import { fetchCoinInfo, fetchCoinTickers } from "../api";
 import Chart from "./Chart";
 import Price from "./Price";
 
@@ -69,6 +69,12 @@ const Tab = styled.span<{ isActive: boolean }>`
   a {
     display: block;
   }
+`;
+
+const BackBtn = styled.button`
+  background-color: inherit;
+  border: 0;
+  color: ${(props) => props.theme.textColor};
 `;
 
 interface RouteParams {
@@ -152,6 +158,11 @@ function Coin() {
 
   return (
     <Container>
+      <Helmet>
+        <title>
+          {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
+        </title>
+      </Helmet>
       <Header>
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
@@ -161,6 +172,9 @@ function Coin() {
         <Loader>Loading...</Loader>
       ) : (
         <>
+          <BackBtn>
+            <Link to="/">&larr; 뒤로 가기</Link>
+          </BackBtn>
           <Overview>
             <OverviewItem>
               <span>Rank:</span>
@@ -196,7 +210,7 @@ function Coin() {
           </Tabs>
           <Routes>
             <Route path={"chart"} element={<Chart coinId={coinId} />} />
-            <Route path={"price"} element={<Price />} />
+            <Route path={"price"} element={<Price coinId={coinId} />} />
           </Routes>
         </>
       )}

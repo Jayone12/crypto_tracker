@@ -18,6 +18,11 @@ interface IHistorical {
   market_cap: number;
 }
 
+interface IChart {
+  x: Date;
+  y: number[];
+}
+
 function Chart({ coinId }: ChartProps) {
   const { isLoading, data } = useQuery<IHistorical[]>(
     ["ohlcv", coinId],
@@ -26,6 +31,10 @@ function Chart({ coinId }: ChartProps) {
       refetchInterval: 10000,
     }
   );
+  const test = data?.map((price) => {
+    return [price.time_close, price.open, price.high, price.low, price.close];
+  });
+
   return (
     <>
       <Helmet>
@@ -36,11 +45,21 @@ function Chart({ coinId }: ChartProps) {
           "Loading chart..."
         ) : (
           <ApexChart
-            type="line"
+            type="candlestick"
             series={[
               {
                 name: "Price",
-                data: data?.map((price) => Number(price.close)) as number[],
+                data: data?.map((props) => {
+                  return {
+                    x: new Date(props.time_open * 1000),
+                    y: [
+                      Number(props.open),
+                      Number(props.high),
+                      Number(props.low),
+                      Number(props.close),
+                    ],
+                  };
+                }) as IChart[],
               },
             ]}
             options={{
@@ -58,7 +77,6 @@ function Chart({ coinId }: ChartProps) {
               grid: { show: false },
               stroke: {
                 curve: "smooth",
-                width: 5,
               },
               yaxis: {
                 show: false,
@@ -75,11 +93,6 @@ function Chart({ coinId }: ChartProps) {
                 type: "datetime",
                 categories: data?.map((price) => price.time_close * 1000),
               },
-              fill: {
-                type: "gradient",
-                gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
-              },
-              colors: ["#0fbcf9"],
               tooltip: {
                 y: {
                   formatter: (value) => `$ ${value}`,
