@@ -4,6 +4,8 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import { HelmetProvider } from "react-helmet-async";
 import { useState } from "react";
 import { lightTheme, darkTheme } from "./theme";
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "./atoms";
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
@@ -69,31 +71,10 @@ a {
 }
 `;
 
-const Icon = styled.div`
-  position: absolute;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  width: 20vw;
-  height: 10vh;
-  font-size: 50px;
-  &:hover {
-    transition: all 0.6s ease-in-out;
-    transform: scale(1.2);
-  }
-`;
-
 function App() {
-  const [themeMode, setThemeMode] = useState(false);
-  const toggleDark = () => {
-    setThemeMode(!themeMode);
-  };
-
+  const isDark = useRecoilValue(isDarkAtom);
   return (
-    <ThemeProvider theme={themeMode ? darkTheme : lightTheme}>
-      <Icon onClick={() => toggleDark()}>
-        {themeMode ? <span>🌚</span> : <span>🌞</span>}
-      </Icon>
+    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
       <GlobalStyle />
       <HelmetProvider>
         <Router />
