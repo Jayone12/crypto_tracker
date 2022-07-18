@@ -173,7 +173,7 @@ function Coin() {
       ) : (
         <>
           <BackBtn>
-            <Link to="/">&larr; 뒤로 가기</Link>
+            <Link to="/crypto_tracker">&larr; 뒤로 가기</Link>
           </BackBtn>
           <Overview>
             <OverviewItem>
